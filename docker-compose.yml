@@ -5,15 +5,18 @@ services:
     container_name: geolocationapi
     image: geolocationapi
     build: .
+    volumes:
+      - .:/code
     ports:
-      - '80:80'
+      - '8080:8080'
     env_file:
       - ./.env
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-      - API_KEY=AIzaSyCKtYFCg2G6csgW8xetgUGQSvgCVqUTlRM
+      - API_KEY=API_KEY
     depends_on:
       - db
+    command: flask run --host=0.0.0.0 --port=8080
 
   db:
     container_name: db
@@ -24,8 +27,3 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata: {}

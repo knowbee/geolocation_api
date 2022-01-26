@@ -1,11 +1,11 @@
 FROM python:3.9-slim-buster
 
-COPY requirements.txt .
+RUN mkdir /code
+
+COPY . /code
+
+WORKDIR /code
 
 RUN pip install -r requirements.txt
 
-COPY . .
-
-EXPOSE 80
-
-CMD ["flask", "run", "--host=0.0.0.0", "--port=80"]
+RUN FLASK_ENV=testing python -m unittest discover
