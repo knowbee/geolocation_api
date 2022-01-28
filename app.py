@@ -3,20 +3,32 @@ from flask_restful import Api
 from flask_migrate import Migrate
 from resources.routes import initialize_routes
 from database.db import db
+from database.config import config
+from dotenv import load_dotenv
+
 
 import os
 
-app = Flask(__name__)
+load_dotenv()
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+def create_app(test_config=None):
 
-db.init_app(app)
-Migrate(app, db)
+    app = Flask(__name__)
+    env = os.environ.get("FLASK_ENV")
 
-api = Api(app)
+    if test_config:
+        app.config.from_mapping(**test_config)
+    else:
+        app.config.from_object(config[env])
 
-initialize_routes(api)
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
 
-if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    Migrate(app, db)
+
+    api = Api(app)
+    initialize_routes(api)
+
+    return app

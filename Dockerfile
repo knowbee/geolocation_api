@@ -6,6 +6,4 @@ COPY . /code
 
 WORKDIR /code
 
-RUN pip install -r requirements.txt
-
-RUN FLASK_ENV=testing python -m unittest discover
+RUN pip install -r requirements.txt 

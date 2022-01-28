@@ -1,4 +1,7 @@
 from .db import db
+from flask_marshmallow import Marshmallow
+
+ma = Marshmallow()
 
 
 class Location(db.Model):
@@ -13,3 +16,12 @@ class Location(db.Model):
         self.latitude = latitude
         self.longitude = longitude
         self.street_name = street_name
+
+
+class LocationSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "latitude", "longitude", "street_name")
+
+
+location_schema = LocationSchema()
+locations_schema = LocationSchema(many=True)

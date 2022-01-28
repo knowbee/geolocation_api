@@ -9,6 +9,12 @@ flask-restful = "*"
 psycopg2-binary = "*"
 flask-sqlalchemy = "*"
 Flask-Migrate = "*"
+flask-marshmallow = "*"
+sqlalchemy-utils = "*"
+marshmallow-sqlalchemy = "*"
+python-dotenv = "*"
+pipenv = "*"
+flask-swagger-ui = "*"
 
 [dev-packages]
 
