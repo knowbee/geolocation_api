@@ -1,0 +1,55 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "knowbee",
+    "version": "1.0.0",
+    "title": "Geolocation API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [{
+    "url": "/"
+  }],
+  "tags": [{
+    "name": "Location Request",
+    "description": "Example API for requesting and return geolocation information"
+  }],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Location Request"
+        ],
+        "summary": "Returns welcome message",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "int32",
+                  "example": 200
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "welcome"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
