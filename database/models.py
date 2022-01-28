@@ -1,5 +1,6 @@
 from .db import db
 from flask_marshmallow import Marshmallow
+from decimal import Decimal
 
 ma = Marshmallow()
 
@@ -12,7 +13,7 @@ class Location(db.Model):
     longitude = db.Column(db.Numeric(9, 6), nullable=False)
     street_name = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, latitude: float, longitude: float, street_name: str):
+    def __init__(self, latitude: Decimal, longitude: Decimal, street_name: str):
         self.latitude = latitude
         self.longitude = longitude
         self.street_name = street_name
