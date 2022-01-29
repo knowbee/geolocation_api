@@ -1,19 +1,36 @@
-from flask import send_from_directory
-from app import create_app
-from flask_swagger_ui import get_swaggerui_blueprint
+from flask import Flask
+from flask_restful import Api
+from flask_migrate import Migrate
 
-app = create_app()
+from database.db import db
+from database.config import config
+from dotenv import load_dotenv
+from sqlalchemy_utils.functions import database_exists, create_database
+
+import os
+
+load_dotenv()
 
 
-@app.route("/static/<path:path>")
-def send_static(path):
-    return send_from_directory("static", path)
+def create_app(initialize_routes, test_config=None):
 
+    app = Flask(__name__)
+    env = os.environ.get("FLASK_ENV")
 
-SWAGGER_URL = "/api/docs"
-API_URL = "/static/swagger.json"
-swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={"app_name": "Geolocation-Swagger-UI"})
+    if test_config:
+        app.config.from_mapping(**test_config)
+    else:
+        app.config.from_object(config[env])
 
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    db.init_app(app)
+    with app.app_context():
+        if not database_exists(app.config["SQLALCHEMY_DATABASE_URI"]):
+            create_database(app.config["SQLALCHEMY_DATABASE_URI"])
+        db.create_all()
+
+    Migrate(app, db)
+
+    api = Api(app)
+    initialize_routes(api)
+
+    return app

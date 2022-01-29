@@ -1,11 +1,11 @@
 from flask import jsonify, request
 from flask_restful import Resource
-from services.geocoders_service import Geocoding
+from test.mocks.services.geocoder_service_mock import GeocodingMock
 from database.models import Location, locations_schema
 from database.db import db
 
 
-class GeoLocation(Resource):
+class GeoLocationMock(Resource):
     def get(self):
         location = Location.query.all()
         result = locations_schema.dump(location)
@@ -13,7 +13,7 @@ class GeoLocation(Resource):
 
     def post(self):
         body = request.get_json()
-        geolocator = Geocoding()
+        geolocator = GeocodingMock()
         street_name = body.get("street_name")
         if street_name != None:
             address = geolocator.geocode(street_name)
@@ -26,13 +26,9 @@ class GeoLocation(Resource):
             latitude = body.get("latitude")
             longitude = body.get("longitude")
             address = geolocator.address_lookup(latitude, longitude)
-            data = {
-                "street_name": address["street_name"],
-                "latitude": address["latitude"],
-                "longitude": address["longitude"],
-            }
-            result = Location(**data)
+
+            result = Location(**address)
             db.session.add(result)
             db.session.commit()
 
-            return jsonify({"street_name": data["street_name"]})
+            return jsonify({"street_name": address["street_name"]})

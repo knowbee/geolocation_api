@@ -1,11 +1,12 @@
 import unittest
-from app import create_app
+from server import create_app
 from database.db import db
+from test.mocks.resources.routes import initialize_routes
 import time
 import os
 
 
-app = create_app()
+app = create_app(initialize_routes)
 
 
 class BaseCase(unittest.TestCase):
@@ -19,11 +20,13 @@ class BaseCase(unittest.TestCase):
             "DEBUG": True,
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         }
-        self.app = create_app(config_dict)
-        self.app = self.app.test_client()
+        self.app = create_app(initialize_routes, config_dict)
+        self.app.app_context().push()
+        self.client = self.app.test_client()
         self.db = db
 
         time.sleep(2)
 
     def tearDown(self):
         self.db.session.remove()
+        self.db.drop_all()

@@ -1,34 +1,20 @@
-from flask import Flask
-from flask_restful import Api
-from flask_migrate import Migrate
+from flask import send_from_directory
+from server import create_app
+from flask_swagger_ui import get_swaggerui_blueprint
 from resources.routes import initialize_routes
-from database.db import db
-from database.config import config
-from dotenv import load_dotenv
+
+app = create_app(initialize_routes)
 
 
-import os
+@app.route("/static/<path:path>")
+def send_static(path):
+    return send_from_directory("static", path)
 
-load_dotenv()
 
+SWAGGER_URL = "/api/docs"
+API_URL = "/static/swagger.json"
+swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={"app_name": "Geolocation-Swagger-UI"})
 
-def create_app(test_config=None):
-
-    app = Flask(__name__)
-    env = os.environ.get("FLASK_ENV")
-
-    if test_config:
-        app.config.from_mapping(**test_config)
-    else:
-        app.config.from_object(config[env])
-
-    with app.app_context():
-        db.init_app(app)
-        db.create_all()
-
-    Migrate(app, db)
-
-    api = Api(app)
-    initialize_routes(api)
-
-    return app
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+if __name__ == "__main__":
+    app.run(debug=True, port=8080)

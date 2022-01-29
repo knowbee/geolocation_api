@@ -13,7 +13,6 @@ services:
     env_file:
       - ./.env
     environment:
-      - API_KEY=${API_KEY}
       - FLASK_ENV=docker
     depends_on:
       - db

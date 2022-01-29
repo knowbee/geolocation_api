@@ -11,7 +11,7 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Numeric(8, 6), nullable=False)
     longitude = db.Column(db.Numeric(9, 6), nullable=False)
-    street_name = db.Column(db.String(120), nullable=False)
+    street_name = db.Column(db.String(), nullable=False)
 
     def __init__(self, latitude: Decimal, longitude: Decimal, street_name: str):
         self.latitude = latitude
