@@ -3,8 +3,14 @@ import json
 
 
 class TestGeolocationService(BaseCase):
+    def test_0_drop_database(self):
+        self.db.session.remove()
+        self.db.drop_all()
+        self.db.create_all()
+
     def test_1_get_empty_geolocation(self):
         response = self.client.get("/")
+        self.assertEqual(response.json["message"], "No location found")
         self.assertEqual(response.status_code, 200)
 
     def test_2_returns_a_street_name_when_given_coordinates(self):
@@ -24,4 +30,9 @@ class TestGeolocationService(BaseCase):
 
         self.assertEqual(response.json["latitude"], "-1.954690")
         self.assertEqual(response.json["longitude"], "30.092750")
+        self.assertEqual(response.status_code, 200)
+
+    def test_4_get_list_of_locations(self):
+        response = self.client.get("/")
+        self.assertIsInstance(response.json, list)
         self.assertEqual(response.status_code, 200)

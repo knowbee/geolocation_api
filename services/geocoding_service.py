@@ -1,7 +1,7 @@
 from geopy.geocoders import Nominatim
 
 
-class Geocoding:
+class GeocodingService:
     def __init__(self):
         self.geolocator = Nominatim(user_agent="geolocationapi")
 

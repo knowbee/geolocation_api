@@ -1,11 +1,10 @@
-from .db import db
 from flask_marshmallow import Marshmallow
-from decimal import Decimal
 from datetime import datetime
 from weakref import WeakValueDictionary
 
 from sqlalchemy import inspect
 from sqlalchemy.orm import aliased
+from database.db import db
 
 ma = Marshmallow()
 
@@ -35,8 +34,6 @@ class BaseModel:
     to_json_filter = ()
 
     def __repr__(self):
-        """Define a base way to print models
-        Columns inside `print_filter` are excluded"""
         return "%s(%s)" % (
             self.__class__.__name__,
             {column: value for column, value in self._to_dict().items() if column not in self.print_filter},
@@ -44,8 +41,6 @@ class BaseModel:
 
     @property
     def json(self):
-        """Define a base way to jsonify models
-        Columns inside `to_json_filter` are excluded"""
         return {
             column: value if not isinstance(value, datetime) else value.strftime("%Y-%m-%d")
             for column, value in self._to_dict().items()
@@ -53,11 +48,6 @@ class BaseModel:
         }
 
     def _to_dict(self):
-        """This would more or less be the same as a `to_json`
-        But putting it in a "private" function
-        Allows to_json to be overriden without impacting __repr__
-        Or the other way around
-        And to add filter lists"""
         return {column.key: getattr(self, column.key) for column in inspect(self.__class__).attrs}
 
     def save(self):
@@ -68,26 +58,3 @@ class BaseModel:
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
-
-class Location(db.Model, BaseModel, metaclass=MetaBaseModel):
-    __tablename__ = "locations"
-
-    id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Numeric(8, 6), nullable=False)
-    longitude = db.Column(db.Numeric(9, 6), nullable=False)
-    street_name = db.Column(db.String(), nullable=False)
-
-    def __init__(self, latitude: Decimal, longitude: Decimal, street_name: str):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.street_name = street_name
-
-
-class LocationSchema(ma.Schema):
-    class Meta:
-        fields = ("id", "latitude", "longitude", "street_name")
-
-
-location_schema = LocationSchema()
-locations_schema = LocationSchema(many=True)
