@@ -1,4 +1,4 @@
-from database.db import db
+from src.database.db import db
 from decimal import Decimal
 from .abc import BaseModel, MetaBaseModel
 from flask_marshmallow import Marshmallow

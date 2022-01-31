@@ -2,12 +2,12 @@ from flask import Flask
 
 from flask_migrate import Migrate
 
-from database.db import db
-from database.config import config
+from src.database.db import db
+from src.database.config import config
 from dotenv import load_dotenv
 from sqlalchemy_utils.functions import database_exists, create_database
-from routes.initializer import initialize_routes
-from flask_swagger_ui import get_swaggerui_blueprint
+from src.routes.initializer import initialize_routes
+from src.utils.swagger_setup import configure_swagger
 
 import os
 
@@ -34,12 +34,6 @@ def create_app(geocoding, test_config=None):
     Migrate(app, db)
 
     initialize_routes(geocoding, app)
-
-    SWAGGER_URL = "/api/docs"
-    API_URL = "/static/swagger.json"
-
-    SWAGGER_BLUEPRINT = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={"app_name": "Geolocation-Swagger-UI"})
-
-    app.register_blueprint(SWAGGER_BLUEPRINT, url_prefix=SWAGGER_URL)
+    configure_swagger(app)
 
     return app

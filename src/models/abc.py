@@ -4,7 +4,7 @@ from weakref import WeakValueDictionary
 
 from sqlalchemy import inspect
 from sqlalchemy.orm import aliased
-from database.db import db
+from src.database.db import db
 
 ma = Marshmallow()
 

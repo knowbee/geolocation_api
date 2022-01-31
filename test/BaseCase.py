@@ -1,12 +1,11 @@
 import unittest
-from server import create_app
-from database.db import db
-from test.mocks.services.geocoding_service_mock import GeocodingServiceMock
-import time
+from src.server import create_app
+from src.database.db import db
+from test.mocks.helpers.geocoding_mock import GeocodingMock
 import os
 
 
-app = create_app(geocoding=GeocodingServiceMock())
+app = create_app(geocoding=GeocodingMock())
 
 
 class BaseCase(unittest.TestCase):
@@ -20,7 +19,7 @@ class BaseCase(unittest.TestCase):
             "DEBUG": True,
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         }
-        self.app = create_app(test_config=config_dict, geocoding=GeocodingServiceMock())
+        self.app = create_app(test_config=config_dict, geocoding=GeocodingMock())
         self.app.app_context().push()
         self.client = self.app.test_client()
         self.db = db

@@ -1,0 +1,28 @@
+Get latitude and longitude of a location based on the street name or vice versa
+---
+tags:
+  - geolocation
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        street_name:
+          type: string
+          description: The street name of the location
+        latitude:
+          type: string
+          description: The latitude of the location
+        longitude:
+          type: string
+          description: The longitude of the location
+responses:
+  200:
+    schema:
+      example:
+        geolocation:
+          id: 1
+          latitude: '-1.955283'
+          longitude: '30.093742'
+          street_name: 'Kigali Convention Center'

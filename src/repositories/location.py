@@ -1,4 +1,4 @@
-from models import Location
+from src.models import Location
 
 
 class LocationRepository:

@@ -1,7 +1,7 @@
 import os
-import routes
+import src.routes as routes
 from flask.blueprints import Blueprint
-from resources import GeoLocationResource
+from src.resources import GeoLocationResource
 
 APPLICATION_ROOT = os.getenv("APPLICATION_ROOT", "/")
 
