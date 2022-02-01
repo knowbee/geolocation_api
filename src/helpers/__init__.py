@@ -1,1 +1,1 @@
-from .geocoding import Geocoding
+from .geocoding_wrapper import GeocodingWrapper

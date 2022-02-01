@@ -9,10 +9,10 @@ ma = Marshmallow()
 class Location(db.Model, BaseModel, metaclass=MetaBaseModel):
     __tablename__ = "locations"
 
-    id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Numeric(8, 6), nullable=False)
-    longitude = db.Column(db.Numeric(9, 6), nullable=False)
-    street_name = db.Column(db.String(), nullable=False)
+    id: int = db.Column(db.Integer, primary_key=True)
+    latitude: Decimal = db.Column(db.Numeric(8, 6), nullable=False)
+    longitude: Decimal = db.Column(db.Numeric(9, 6), nullable=False)
+    street_name: str = db.Column(db.String(), nullable=False)
 
     def __init__(self, latitude: Decimal, longitude: Decimal, street_name: str):
         self.latitude = latitude

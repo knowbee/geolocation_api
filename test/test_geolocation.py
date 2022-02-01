@@ -36,3 +36,30 @@ class TestGeolocationService(BaseCase):
         response = self.client.get("/")
         self.assertIsInstance(response.json, list)
         self.assertEqual(response.status_code, 200)
+
+    def test_4_returns_error_message_if_street_name_is_empty(self):
+        street_name = ""
+        payload = json.dumps({"street_name": street_name})
+
+        response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
+
+        self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
+        self.assertEqual(response.status_code, 200)
+
+    def test_5_returns_error_message_if_latitude_and_longitude_are_empty(self):
+        latitude = ""
+        longitude = ""
+        payload = json.dumps({"latitude": latitude, "longitude": longitude})
+
+        response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
+
+        self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
+        self.assertEqual(response.status_code, 200)
+
+    def test_5_returns_error_message_if_empty_object_is_posted(self):
+        payload = json.dumps({})
+
+        response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
+
+        self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
+        self.assertEqual(response.status_code, 200)

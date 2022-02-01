@@ -1,4 +1,4 @@
-class GeocodingMock:
+class GeocodingWrapperMock:
     def __init__(self):
         self.geolocator = NominatimMock(user_agent="geolocationapi")
 
