@@ -1,11 +1,8 @@
 import unittest
-from src.server import create_app
+from src.server import MyApp
 from src.database.db import db
-from test.mocks.helpers.geocoding_mock import GeocodingWrapperMock
+from test.mocks.helpers.geocoding_wrapper_mock import GeocodingWrapperMock
 import os
-
-
-app = create_app(geocoding=GeocodingWrapperMock())
 
 
 class BaseCase(unittest.TestCase):
@@ -19,7 +16,10 @@ class BaseCase(unittest.TestCase):
             "DEBUG": True,
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         }
-        self.app = create_app(test_config=config_dict, geocoding=GeocodingWrapperMock())
+        self.app_instance = MyApp()
+        self.app_instance.geocoding_wrapper = GeocodingWrapperMock()
+        self.app = self.app_instance.create_app(config_dict)
+
         self.app.app_context().push()
         self.client = self.app.test_client()
         self.db = db

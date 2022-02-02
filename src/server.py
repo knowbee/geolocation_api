@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from sqlalchemy_utils.functions import database_exists, create_database
 from src.routes.initializer import initialize_routes
 from src.utils.swagger_setup import configure_swagger
+from src.helpers import GeocodingWrapper
 
 import os
 
@@ -15,25 +16,29 @@ import os
 load_dotenv()
 
 
-def create_app(geocoding, test_config=None):
+class MyApp:
+    def __init__(self):
+        self.app = Flask(__name__)
+        self.geocoding_wrapper: GeocodingWrapper = GeocodingWrapper()
 
-    app = Flask(__name__)
-    env = os.environ.get("FLASK_ENV")
+    def create_app(self, test_config=None):
 
-    if test_config:
-        app.config.from_mapping(**test_config)
-    else:
-        app.config.from_object(config[env])
+        env = os.environ.get("FLASK_ENV")
 
-    db.init_app(app)
-    with app.app_context():
-        if not database_exists(app.config["SQLALCHEMY_DATABASE_URI"]):
-            create_database(app.config["SQLALCHEMY_DATABASE_URI"])
-        db.create_all()
+        if test_config:
+            self.app.config.from_mapping(**test_config)
+        else:
+            self.app.config.from_object(config[env])
 
-    Migrate(app, db)
+        db.init_app(self.app)
+        with self.app.app_context():
+            if not database_exists(self.app.config["SQLALCHEMY_DATABASE_URI"]):
+                create_database(self.app.config["SQLALCHEMY_DATABASE_URI"])
+            db.create_all()
 
-    initialize_routes(geocoding, app)
-    configure_swagger(app)
+        Migrate(self.app, db)
 
-    return app
+        initialize_routes(self.geocoding_wrapper, self.app)
+        configure_swagger(self.app)
+
+        return self.app

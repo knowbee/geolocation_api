@@ -4,14 +4,14 @@ from flasgger import swag_from
 
 
 class GeoLocationResource(Resource):
-    geocoding = None
+    geocoding_wrapper = None
 
     @classmethod
     @swag_from("../swagger/geolocation/GET.yml")
     def get(cls):
-        return GeolocationService(geocoding=cls.geocoding).get_location()
+        return GeolocationService(geocoding_wrapper=cls.geocoding_wrapper).get_location()
 
     @classmethod
     @swag_from("../swagger/geolocation/POST.yml")
     def post(cls):
-        return GeolocationService(geocoding=cls.geocoding).create_location()
+        return GeolocationService(geocoding_wrapper=cls.geocoding_wrapper).create_location()

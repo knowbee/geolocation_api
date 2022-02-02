@@ -6,9 +6,9 @@ from src.resources import GeoLocationResource
 APPLICATION_ROOT = os.getenv("APPLICATION_ROOT", "/")
 
 
-def initialize_routes(geocoding, app):
+def initialize_routes(geocoding_wrapper, app):
 
-    GeoLocationResource.geocoding = geocoding
+    GeoLocationResource.geocoding_wrapper = geocoding_wrapper
 
     for blueprint in vars(routes).values():
         if isinstance(blueprint, Blueprint):
