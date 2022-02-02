@@ -4,6 +4,7 @@ from src.repositories.location import LocationRepository
 from geopy.geocoders import Nominatim
 from src.helpers.geocoding_wrapper import GeocodingWrapper
 import json
+import sqlalchemy
 
 
 class GeolocationService:
@@ -39,8 +40,11 @@ class GeolocationService:
         body = request.get_json()
         if self.has_street_name(body):
             if body["street_name"].replace(" ", "").isalpha():
-                res = self.geocoding_wrapper.geocode(body["street_name"])
-                return self.add_new_entry(res)
+                try:
+                    res = self.geocoding_wrapper.geocode(body["street_name"])
+                    return self.add_new_entry(res)
+                except (AttributeError):
+                    return jsonify({"message": "Invalid street name"})
             else:
                 return jsonify({"message": "Invalid street name"})
 
@@ -48,7 +52,7 @@ class GeolocationService:
             try:
                 res = self.geocoding_wrapper.address_lookup(body["latitude"], body["longitude"])
                 return self.add_new_entry(res)
-            except:
+            except sqlalchemy.exc.DataError:
                 return jsonify({"message": "Invalid coordinates"})
         else:
             return jsonify({"message": "Failed to retrieve geolocation information"})

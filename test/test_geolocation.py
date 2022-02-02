@@ -37,7 +37,7 @@ class TestGeolocationService(BaseCase):
         self.assertIsInstance(response.json, list)
         self.assertEqual(response.status_code, 200)
 
-    def test_4_returns_error_message_if_street_name_is_empty(self):
+    def test_5_returns_error_message_if_street_name_is_empty(self):
         street_name = ""
         payload = json.dumps({"street_name": street_name})
 
@@ -46,7 +46,7 @@ class TestGeolocationService(BaseCase):
         self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
         self.assertEqual(response.status_code, 200)
 
-    def test_5_returns_error_message_if_latitude_and_longitude_are_empty(self):
+    def test_6_returns_error_message_if_latitude_and_longitude_are_empty(self):
         latitude = ""
         longitude = ""
         payload = json.dumps({"latitude": latitude, "longitude": longitude})
@@ -56,7 +56,7 @@ class TestGeolocationService(BaseCase):
         self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
         self.assertEqual(response.status_code, 200)
 
-    def test_5_returns_error_message_if_empty_object_is_posted(self):
+    def test_7_returns_error_message_if_empty_object_is_posted(self):
         payload = json.dumps({})
 
         response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
@@ -64,7 +64,7 @@ class TestGeolocationService(BaseCase):
         self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
         self.assertEqual(response.status_code, 200)
 
-    def test_5_returns_invalid_coordinates_error_message_if_coordinates_are_not_valid(self):
+    def test_8_returns_invalid_coordinates_error_message_if_coordinates_are_not_valid(self):
         latitude = "latitude"
         longitude = "longitude"
         payload = json.dumps({"latitude": latitude, "longitude": longitude})
@@ -74,10 +74,20 @@ class TestGeolocationService(BaseCase):
         self.assertEqual(response.json["message"], "Invalid coordinates")
         self.assertEqual(response.status_code, 200)
 
-    def test_6_returns_invalid_street_name_error_message_if_street_name_is_not_valid(self):
+    def test_9_returns_invalid_street_name_error_message_if_street_name_is_not_valid(self):
         street_name = "+++++++"
         payload = json.dumps({"street_name": street_name})
 
         response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
         self.assertEqual(response.json["message"], "Invalid street name")
+        self.assertEqual(response.status_code, 200)
+
+    def test_10_returns_invalid_coordinates_error_message_if_coordinates_are_not_out_of_bounds(self):
+        latitude = "500"
+        longitude = "500"
+        payload = json.dumps({"latitude": latitude, "longitude": longitude})
+
+        response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
+
+        self.assertEqual(response.json["message"], "Invalid coordinates")
         self.assertEqual(response.status_code, 200)
