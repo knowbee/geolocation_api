@@ -2,12 +2,13 @@ from flask import jsonify, request, Response
 from src.models import Location, locations_schema
 from src.repositories.location import LocationRepository
 from geopy.geocoders import Nominatim
+from src.helpers.geocoding_wrapper import GeocodingWrapper
 import json
 
 
 class GeolocationService:
     def __init__(self, geocoding_wrapper: Nominatim):
-        self.geocoding_wrapper: Nominatim = geocoding_wrapper
+        self.geocoding_wrapper: GeocodingWrapper = geocoding_wrapper
 
     def has_street_name(self, data) -> bool:
         return "street_name" in data and data["street_name"] != None and data["street_name"].strip() != ""
@@ -37,12 +38,17 @@ class GeolocationService:
     def create_location(self):
         body = request.get_json()
         if self.has_street_name(body):
-            address = self.geocoding_wrapper.geocode(body["street_name"])
-            return self.add_new_entry(address)
+            if body["street_name"].replace(" ", "").isalpha():
+                res = self.geocoding_wrapper.geocode(body["street_name"])
+                return self.add_new_entry(res)
+            else:
+                return jsonify({"message": "Invalid street name"})
 
         elif self.has_latitude_and_longitude(body):
-            address = self.geocoding_wrapper.address_lookup(body["latitude"], body["longitude"])
-            return self.add_new_entry(address)
-
+            try:
+                res = self.geocoding_wrapper.address_lookup(body["latitude"], body["longitude"])
+                return self.add_new_entry(res)
+            except:
+                return jsonify({"message": "Invalid coordinates"})
         else:
             return jsonify({"message": "Failed to retrieve geolocation information"})
