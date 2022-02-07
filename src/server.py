@@ -13,9 +13,6 @@ from src.helpers import GeocodingWrapper
 import os
 
 
-load_dotenv()
-
-
 class MyApp:
     def __init__(self):
         self.app = Flask(__name__)
@@ -25,6 +22,8 @@ class MyApp:
 
         env = os.environ.get("FLASK_ENV")
 
+        if env != "prod":
+            load_dotenv()
         if test_config:
             self.app.config.from_mapping(**test_config)
         else:
