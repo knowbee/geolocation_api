@@ -79,7 +79,7 @@ class TestGeolocationService(BaseCase):
         payload = json.dumps({"street_name": street_name})
 
         response = self.client.post("/", headers={"Content-Type": "application/json"}, data=payload)
-        self.assertEqual(response.json["message"], "Invalid street name")
+        self.assertEqual(response.json["message"], "Failed to retrieve geolocation information")
         self.assertEqual(response.status_code, 200)
 
     def test_10_returns_invalid_coordinates_error_message_if_coordinates_are_not_out_of_bounds(self):

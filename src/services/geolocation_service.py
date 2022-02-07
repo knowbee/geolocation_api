@@ -11,8 +11,14 @@ class GeolocationService:
     def __init__(self, geocoding_wrapper: Nominatim):
         self.geocoding_wrapper: GeocodingWrapper = geocoding_wrapper
 
+    def is_valid_street_name(self, street_name):
+        return street_name.replace(" ", "").isalpha()
+
     def has_street_name(self, data) -> bool:
-        return "street_name" in data and data["street_name"] != None and data["street_name"].strip() != ""
+        if "street_name" in data and data["street_name"] != None and data["street_name"].strip() != "":
+            return self.is_valid_street_name(data["street_name"])
+        else:
+            return False
 
     def has_latitude_and_longitude(self, data) -> bool:
         return (
@@ -39,13 +45,10 @@ class GeolocationService:
     def create_location(self):
         body = request.get_json()
         if self.has_street_name(body):
-            if body["street_name"].replace(" ", "").isalpha():
-                try:
-                    res = self.geocoding_wrapper.geocode(body["street_name"])
-                    return self.add_new_entry(res)
-                except (AttributeError):
-                    return jsonify({"message": "Invalid street name"})
-            else:
+            try:
+                res = self.geocoding_wrapper.geocode(body["street_name"])
+                return self.add_new_entry(res)
+            except (AttributeError):
                 return jsonify({"message": "Invalid street name"})
 
         elif self.has_latitude_and_longitude(body):
