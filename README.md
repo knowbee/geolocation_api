@@ -2,6 +2,8 @@
 
 The primary goal of this project is Testing around dependencies.
 
+[![CircleCI](https://circleci.com/gh/knowbee/geolocation_api/tree/ft-add-geocoders-service-and-tests.svg?style=svg)](https://circleci.com/gh/knowbee/geolocation_api/tree/ft-add-geocoders-service-and-tests)
+
 ## Table of Contents
 
 1. [Dependencies](#dependencies)
@@ -31,7 +33,7 @@ Then install dependencies and check that it works
 ### Docker
 
 ```bash
-$ docker compose up --build --remove-orphans
+$ docker-compose up --build --force-recreate --remove-orphans
 ```
 
 ### Local
@@ -42,7 +44,7 @@ $ pipenv shell        # Start a virtual environment
 $ flask run        # Run your local python server
 ```
 
-If everything works, you should see the available routes [here](http://127.0.0.1:5000/api/docs).
+If everything works, you should see the available routes [here](http://127.0.0.1:5000/apidocs).
 
 ## Database
 

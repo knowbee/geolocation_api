@@ -14,7 +14,8 @@ sqlalchemy-utils = "*"
 marshmallow-sqlalchemy = "*"
 python-dotenv = "*"
 pipenv = "*"
-flask-swagger-ui = "*"
+geopy = "*"
+flasgger = "*"
 
 [dev-packages]
 

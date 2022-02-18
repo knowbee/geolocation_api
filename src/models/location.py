@@ -1,17 +1,18 @@
-from .db import db
-from flask_marshmallow import Marshmallow
+from src.database.db import db
 from decimal import Decimal
+from .abc import BaseModel, MetaBaseModel
+from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
 
 
-class Location(db.Model):
+class Location(db.Model, BaseModel, metaclass=MetaBaseModel):
     __tablename__ = "locations"
 
-    id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Numeric(8, 6), nullable=False)
-    longitude = db.Column(db.Numeric(9, 6), nullable=False)
-    street_name = db.Column(db.String(120), nullable=False)
+    id: int = db.Column(db.Integer, primary_key=True)
+    latitude: Decimal = db.Column(db.Numeric(8, 6), nullable=False)
+    longitude: Decimal = db.Column(db.Numeric(9, 6), nullable=False)
+    street_name: str = db.Column(db.String(), nullable=False)
 
     def __init__(self, latitude: Decimal, longitude: Decimal, street_name: str):
         self.latitude = latitude

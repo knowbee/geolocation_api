@@ -1,0 +1,12 @@
+Return an geolocation information saved in the database
+---
+tags:
+  - geolocation
+responses:
+  200:
+    schema:
+      example:
+        geolocation:
+          latitude: '1.955283'
+          longitude: '30.093742'
+          street_name: 'Kigali Convention Center'

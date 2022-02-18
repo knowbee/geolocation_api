@@ -1,0 +1,1 @@
+from .location_blueprint import LOCATION_BLUEPRINT
